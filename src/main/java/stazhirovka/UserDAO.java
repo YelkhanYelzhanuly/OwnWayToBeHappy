@@ -14,7 +14,6 @@ public class UserDAO {
         List<User> usersList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, user, password)) {
             Statement s = c.createStatement();
-            // Обновил таблицу на users и столбец на stack
             ResultSet rs = s.executeQuery(
                     "SELECT id, name, programming_language, stack FROM users");
             while (rs.next()) {
@@ -33,7 +32,6 @@ public class UserDAO {
 
     public void save(User u) {
         try (Connection c = DriverManager.getConnection(url, user, password)) {
-            // Обновил таблицу на users и столбец на stack
             PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO users (name, programming_language, stack) VALUES (?, ?, ?)");
             ps.setString(1, u.getName());
@@ -70,7 +68,6 @@ public class UserDAO {
 
     public void updateStack(int id, String stack) {
         try (Connection c = DriverManager.getConnection(url, user, password)) {
-            // Обновил таблицу на users и столбец на stack
             PreparedStatement ps =
                     c.prepareStatement("UPDATE users SET stack = ? WHERE id = ?");
             ps.setString(1, stack);
