@@ -1,4 +1,4 @@
-package fitness.center;
+package stazhirovka;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -6,37 +6,39 @@ import java.util.List;
 
 public class UserDAO {
 
-    private final String url = "jdbc:postgresql://localhost:5432/OOPproject";
+    private final String url = "jdbc:postgresql://localhost:5432/Users";
     private final String user = "postgres";
     private final String password = "414141";
 
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
+        List<User> usersList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, user, password)) {
             Statement s = c.createStatement();
+            // Обновил таблицу на users и столбец на stack
             ResultSet rs = s.executeQuery(
-                    "SELECT id, name, last_name, weight FROM users");
+                    "SELECT id, name, programming_language, stack FROM users");
             while (rs.next()) {
-                users.add(new User(
+                usersList.add(new User(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getString("last_name"),
-                        rs.getDouble("weight")
+                        rs.getString("programming_language"),
+                        rs.getString("stack")
                 ));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return users;
+        return usersList;
     }
 
     public void save(User u) {
         try (Connection c = DriverManager.getConnection(url, user, password)) {
+            // Обновил таблицу на users и столбец на stack
             PreparedStatement ps = c.prepareStatement(
-                    "INSERT INTO users (name, last_name, weight) VALUES (?, ?, ?)");
+                    "INSERT INTO users (name, programming_language, stack) VALUES (?, ?, ?)");
             ps.setString(1, u.getName());
-            ps.setString(2, u.getLastName());
-            ps.setDouble(3, u.getWeight());
+            ps.setString(2, u.getProgrammingLanguage());
+            ps.setString(3, u.getStack());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,11 +56,11 @@ public class UserDAO {
         }
     }
 
-    public void updateWeight(int id, double weight) {
+    public void updateLanguage(int id, String language) {
         try (Connection c = DriverManager.getConnection(url, user, password)) {
             PreparedStatement ps =
-                    c.prepareStatement("UPDATE users SET weight = ? WHERE id = ?");
-            ps.setDouble(1, weight);
+                    c.prepareStatement("UPDATE users SET programming_language = ? WHERE id = ?");
+            ps.setString(1, language);
             ps.setInt(2, id);
             ps.executeUpdate();
         } catch (Exception e) {
@@ -66,11 +68,12 @@ public class UserDAO {
         }
     }
 
-    public void updateLastName(int id, String lastName) {
+    public void updateStack(int id, String stack) {
         try (Connection c = DriverManager.getConnection(url, user, password)) {
+            // Обновил таблицу на users и столбец на stack
             PreparedStatement ps =
-                    c.prepareStatement("UPDATE users SET last_name = ? WHERE id = ?");
-            ps.setString(1, lastName);
+                    c.prepareStatement("UPDATE users SET stack = ? WHERE id = ?");
+            ps.setString(1, stack);
             ps.setInt(2, id);
             ps.executeUpdate();
         } catch (Exception e) {
